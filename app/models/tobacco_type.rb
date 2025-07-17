@@ -1,0 +1,2 @@
+class TobaccoType < ApplicationRecord
+end
