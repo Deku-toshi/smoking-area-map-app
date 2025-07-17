@@ -1,0 +1,2 @@
+class SmokingAreaType < ApplicationRecord
+end
