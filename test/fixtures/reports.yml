@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  photo: one
+  report_atatus: one
+  target_type: MyString
+  reason: MyText
+
+two:
+  user: two
+  photo: two
+  report_atatus: two
+  target_type: MyString
+  reason: MyText

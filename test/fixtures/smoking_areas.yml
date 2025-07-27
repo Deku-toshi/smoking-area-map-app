@@ -1,0 +1,31 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  smoking_area_status: one
+  smoking_area_type: one
+  name: MyString
+  latitude: 9.99
+  longitude: 9.99
+  ins_indoor: false
+  available_time_type: MyString
+  available_time_start: 2025-07-21 13:23:51
+  available_time_end: 2025-07-21 13:23:51
+  available_time_note: MyString
+  detail: MyText
+  address: MyString
+
+two:
+  user: two
+  smoking_area_status: two
+  smoking_area_type: two
+  name: MyString
+  latitude: 9.99
+  longitude: 9.99
+  ins_indoor: false
+  available_time_type: MyString
+  available_time_start: 2025-07-21 13:23:51
+  available_time_end: 2025-07-21 13:23:51
+  available_time_note: MyString
+  detail: MyText
+  address: MyString
