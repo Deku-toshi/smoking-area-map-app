@@ -4,6 +4,7 @@ class SmokingArea < ApplicationRecord
   belongs_to :smoking_area_type
 
   has_many :photos
+  has_many :comments
 
   validates :name, presence: true, length: {maximum: 50}
   validates :latitude, presence: true
