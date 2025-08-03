@@ -1,7 +1,10 @@
-TobaccoType.create!([
-    {kinds: "紙タバコ"},
-    {kinds: "電子タバコ"}
-])
+TobaccoType.find_or_create_by!(kinds: "紙タバコ") do |t|
+    t.icon = "🚬"
+end
+
+TobaccoType.find_or_create_by!(kinds: "電子タバコ") do |t|
+    t.icon = "電子"
+end
 
 SmokingAreaStatus.create!([
     {name: "公開中"},
@@ -18,7 +21,7 @@ SmokingAreaType.create!([
     {name: "公共", icon: "public", color: "#1976D2"},
     {name: "施設内", icon: "mall", color: "#43A047"},
     {name: "飲食店", icon: "restaurant", color: "#8D6E63"},
-    {name: "カフェ", icon: "cafe", color: "#795548"}
+    {name: "カフェ", icon: "cafe", color: "#795548"},
     {name: "コンビニ", icon: "convenience", color: "#FB8C00"},
     {name: "その他", icon: "other", color: "#9E9E9E"}
 ])
