@@ -1,7 +1,10 @@
-TobaccoType.create!([
-    {kinds: "紙タバコ"},
-    {kinds: "電子タバコ"}
-])
+TobaccoType.find_or_create_by!(kinds: "紙タバコ") do |t|
+    t.icon = "🚬"
+end
+
+TobaccoType.find_or_create_by!(kinds: "電子タバコ") do |t|
+    t.icon = "電子"
+end
 
 SmokingAreaStatus.create!([
     {name: "公開中"},
