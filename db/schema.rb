@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_01_123425) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_06_094641) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -85,6 +85,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_01_123425) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "smoking_area_tobacco_types", force: :cascade do |t|
+    t.bigint "smoking_area_id", null: false
+    t.bigint "tobacco_type_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["smoking_area_id", "tobacco_type_id"], name: "idx_on_smoking_area_id_tobacco_type_id_bc76b2e19e", unique: true
+    t.index ["smoking_area_id"], name: "index_smoking_area_tobacco_types_on_smoking_area_id"
+    t.index ["tobacco_type_id"], name: "index_smoking_area_tobacco_types_on_tobacco_type_id"
+  end
+
   create_table "smoking_area_types", force: :cascade do |t|
     t.string "name"
     t.string "icon"
@@ -137,6 +147,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_01_123425) do
   add_foreign_key "photos", "smoking_areas"
   add_foreign_key "reports", "report_statuses"
   add_foreign_key "reports", "users"
+  add_foreign_key "smoking_area_tobacco_types", "smoking_areas"
+  add_foreign_key "smoking_area_tobacco_types", "tobacco_types"
   add_foreign_key "smoking_areas", "smoking_area_statuses"
   add_foreign_key "smoking_areas", "smoking_area_types"
   add_foreign_key "smoking_areas", "users"
