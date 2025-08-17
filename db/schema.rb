@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_06_094641) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_15_110842) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -60,16 +60,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_06_094641) do
   end
 
   create_table "report_statuses", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_report_statuses_on_name", unique: true
   end
 
   create_table "reports", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "report_status_id", null: false
-    t.string "target_type"
-    t.text "reason"
+    t.text "reason", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "targetable_type", null: false
@@ -80,9 +80,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_06_094641) do
   end
 
   create_table "smoking_area_statuses", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_smoking_area_statuses_on_name", unique: true
   end
 
   create_table "smoking_area_tobacco_types", force: :cascade do |t|
@@ -96,11 +97,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_06_094641) do
   end
 
   create_table "smoking_area_types", force: :cascade do |t|
-    t.string "name"
-    t.string "icon"
-    t.string "color"
+    t.string "name", null: false
+    t.string "icon", null: false
+    t.string "color", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "code", null: false
+    t.index ["code"], name: "index_smoking_area_types_on_code", unique: true
+    t.check_constraint "color::text ~ '^#[0-9A-Fa-f]{6}$'::text", name: "chk_smoking_area_types_color_hex"
   end
 
   create_table "smoking_areas", force: :cascade do |t|
@@ -125,10 +129,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_06_094641) do
   end
 
   create_table "tobacco_types", force: :cascade do |t|
-    t.string "kinds"
+    t.string "kinds", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "icon"
+    t.string "icon", null: false
+    t.index ["kinds"], name: "index_tobacco_types_on_kinds", unique: true
   end
 
   create_table "users", force: :cascade do |t|
