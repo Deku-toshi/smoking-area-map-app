@@ -13,19 +13,38 @@ ReportStatus.find_or_create_by!(name: "対応前")
 ReportStatus.find_or_create_by!(name: "対応済み")
 ReportStatus.find_or_create_by!(name: "対応中")
 
+
+HEX6 = /\A#[0-9A-Fa-f]{6}\z/
+
 SmokingAreaTypeData = [
-  {name: "公共",   icon: "public",      color: "#1976D2"},
-  {name: "施設内", icon: "mall",        color: "#43A047"},
-  {name: "飲食店", icon: "restaurant",  color: "#8D6E63"},
-  {name: "カフェ", icon: "cafe",        color: "#795548"},
-  {name: "コンビニ", icon: "convenience", color: "#FB8C00"},
-  {name: "その他", icon: "other",       color: "#9E9E9E"}
+  {code: "public",      name: "公共",     icon: "public",      color: "#1976D2"},
+  {code: "mall",        name: "施設内",   icon: "mall",        color: "#43A047"},
+  {code: "restaurant",  name: "飲食店",   icon: "restaurant",  color: "#8D6E63"},
+  {code: "cafe",        name: "カフェ",   icon: "cafe",        color: "#795548"},
+  {code: "convenience", name: "コンビニ", icon: "convenience", color: "#FB8C00"},
+  {code: "other",       name: "その他",   icon: "other",       color: "#9E9E9E"}
 ]
-SmokingAreaTypeData.each do |data|
-  type = SmokingAreaType.find_or_initialize_by(name: data[:name])
-  type.icon  = data[:icon]
-  type.color = data[:color]
-  type.save!
+
+
+SmokingAreaTypeData.each do |row|
+  r = row.transform_keys(&:to_sym)
+  %i[code name icon color].each do |k|
+    raise "SmokingAreaTypeData missing #{k}: #{row.inspect}" if r[k].to_s.strip.empty?
+  end
+  raise "Invalid color format: #{r[:color]} (code=#{r[:code]})" unless r[:color].match?(HEX6)
+end
+
+SmokingAreaType.transaction do
+  SmokingAreaType.delete_all
+  SmokingAreaTypeData.each do |row|
+    r = row.transform_keys(&:to_sym)
+    SmokingAreaType.create!(
+      code:  r[:code],
+      name:  r[:name],
+      icon:  r[:icon],
+      color: r[:color]
+    )
+  end
 end
 
 #以下仮データ
