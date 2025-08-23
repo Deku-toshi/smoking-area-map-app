@@ -11,7 +11,6 @@ one:
   available_time_type: MyString
   available_time_start: 2025-07-21 13:23:51
   available_time_end: 2025-07-21 13:23:51
-  available_time_note: MyString
   detail: MyText
   address: MyString
 
@@ -26,6 +25,5 @@ two:
   available_time_type: MyString
   available_time_start: 2025-07-21 13:23:51
   available_time_end: 2025-07-21 13:23:51
-  available_time_note: MyString
   detail: MyText
   address: MyString
