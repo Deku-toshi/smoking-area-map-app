@@ -2,14 +2,12 @@
 
 one:
   user: one
-  photo: one
-  report_atatus: one
-  target_type: MyString
+  report_status: one
+  targetable: one (Photo)
   reason: MyText
 
 two:
   user: two
-  photo: two
-  report_atatus: two
-  target_type: MyString
+  report_status: two
+  targetable: two (Comment)
   reason: MyText
