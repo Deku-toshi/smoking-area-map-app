@@ -8,28 +8,20 @@ class SmokingArea < ApplicationRecord
   has_many :smoking_area_tobacco_types
   has_many :tobacco_types, through: :smoking_area_tobacco_types
 
-  validates :name, presence: true, length: {maximum: 50}
-  validates :latitude, presence: true
-  validates :longitude, presence: true
-  validates :address, presence: true, length: {maximum: 100}
-  validates :latitude, numericality: { greater_than_or_equal_to: -90, less_than_or_equal_to: 90 }
-  validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
+  validates :name, presence: true, length: {maximum: 100}
+  validates :address, presence: true, length: {maximum: 255}
+  validates :detail, length: {maximum: 2000}, allow_blank: true
 
-  validate :available_time_range_is_valid
+  validates :latitude, presence: true, numericality: { greater_than_or_equal_to: -90, less_than_or_equal_to: 90 }
+  validates :longitude, presence: true, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
 
   enum available_time_type: {
     always: "24時間",
     business: "営業時間内",
     unknown: "不明"
-  }
+  }, _prefix: :available_time
 
-  private
+  validates :available_time_type, inclusion: {in: available_time_types.keys}, allow_nil: true
 
-  def available_time_range_is_valid
-    if available_time_start.present? && available_time_end.present?
-      if available_time_start >= available_time_end
-        errors.add(:available_time_start, "は終了時間より前である必要があります")
-      end
-    end
-  end
+  validates :is_indoor, inclusion: {in: [true, false]}, allow_nil: true
 end
