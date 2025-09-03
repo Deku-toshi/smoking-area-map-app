@@ -1,0 +1,13 @@
+ja:
+  activerecord:
+    attributes:
+      smoking_area:
+        available_time_start: "開始時間"
+        available_time_end:   "終了時間"
+        available_time_type:  "営業時間タイプ"
+  activemodel:
+    attributes:
+      smoking_area:
+        available_time_start: "開始時間"
+        available_time_end:   "終了時間"
+        available_time_type:  "営業時間タイプ"
