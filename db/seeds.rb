@@ -1,10 +1,13 @@
-t = TobaccoType.find_or_initialize_by(kinds: "紙タバコ")
-t.icon = "🚬"
-t.save!
+types = [
+  { kinds: "紙タバコ", icon: "🚬"},
+  { kinds: "電子タバコ", icon: "電子"}
+]
 
-t = TobaccoType.find_or_initialize_by(kinds: "電子タバコ")
-t.icon = "電子"
-t.save!
+types.each do |attrs|
+  rec = TobaccoType.find_or_initialize_by(kinds: attrs[:kinds])
+  rec.assign_attributes(icon: attrs[:icon])
+  rec.save! if rec.changed?
+end
 
 SmokingAreaStatus.find_or_create_by!(name: "公開中")
 SmokingAreaStatus.find_or_create_by!(name: "公開停止中")
@@ -54,18 +57,39 @@ user = User.find_or_create_by!(email: "test@example.com") do |u|
 end
 
 status = SmokingAreaStatus.find_by!(name: "公開中")
-type   = SmokingAreaType.find_by!(name: "公共")
+area_type   = SmokingAreaType.find_by!(name: "公共")
 
 paper  = TobaccoType.find_by!(kinds: "紙タバコ")
 ecig   = TobaccoType.find_by!(kinds: "電子タバコ")
 
-smk = SmokingArea.find_or_initialize_by(name: "新宿駅東口", address: "東京都新宿区新宿3丁目38")
-smk.assign_attributes(
+shinjuku_east_24h = SmokingArea.find_or_initialize_by(
+  name: "新宿駅東口（24時間）", 
+  address: "東京都新宿区新宿3丁目38"
+)
+shinjuku_east_24h.assign_attributes(
   user:                user,
   smoking_area_status: status,
-  smoking_area_type:   type,
+  smoking_area_type:   area_type,
   latitude:            35.6895,
-  longitude:           139.6917
+  longitude:           139.6917,
+  available_time_type: :always
 )
-smk.save!
-smk.tobacco_types = [paper, ecig]
+shinjuku_east_24h.save! if shinjuku_east_24h.changed?
+shinjuku_east_24h.tobacco_types = [paper, ecig]
+
+shinjuku_east_business = SmokingArea.find_or_initialize_by(
+  name: "新宿駅東口（時間指定 08:00-20:00）", 
+  address: "東京都新宿区新宿3丁目38"
+)
+shinjuku_east_business.assign_attributes(
+  user:                user,
+  smoking_area_status: status,
+  smoking_area_type:   area_type,
+  latitude:            35.6895,
+  longitude:           139.6917,
+  available_time_type:  :business,
+  available_time_start: "08:00",
+  available_time_end:   "20:00"
+)
+shinjuku_east_business.save! if shinjuku_east_business.changed?
+shinjuku_east_business.tobacco_types = [ecig]
