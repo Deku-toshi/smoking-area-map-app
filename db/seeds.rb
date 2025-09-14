@@ -9,15 +9,16 @@ types.each do |attrs|
   rec.save! if rec.changed?
 end
 
-SmokingAreaStatus.find_or_create_by!(name: "公開中")
-SmokingAreaStatus.find_or_create_by!(name: "公開停止中")
 
-ReportStatus.find_or_create_by!(name: "対応前")
-ReportStatus.find_or_create_by!(name: "対応済み")
-ReportStatus.find_or_create_by!(name: "対応中")
+%w[公開中 公開停止中].each do |n|
+  SmokingAreaStatus.find_or_create_by!(name: n)
+end
+
+%w[対応前 対応済み 対応中].each do |n|
+  ReportStatus.find_or_create_by!(name: n)
+end
 
 
-HEX6 = /\A#[0-9A-Fa-f]{6}\z/
 
 SmokingAreaTypeData = [
   {code: "public",      name: "公共",     icon: "public",      color: "#1976D2"},
@@ -26,29 +27,21 @@ SmokingAreaTypeData = [
   {code: "cafe",        name: "カフェ",   icon: "cafe",        color: "#795548"},
   {code: "convenience", name: "コンビニ", icon: "convenience", color: "#FB8C00"},
   {code: "other",       name: "その他",   icon: "other",       color: "#9E9E9E"}
-]
+].freeze
+
 
 
 SmokingAreaTypeData.each do |row|
   r = row.transform_keys(&:to_sym)
-  %i[code name icon color].each do |k|
-    raise "SmokingAreaTypeData missing #{k}: #{row.inspect}" if r[k].to_s.strip.empty?
-  end
-  raise "Invalid color format: #{r[:color]} (code=#{r[:code]})" unless r[:color].match?(HEX6)
+  rec = SmokingAreaType.find_or_initialize_by(code: r[:code])
+  rec.assign_attributes(
+    name:  r[:name],
+    icon:  r[:icon],
+    color: r[:color]
+  )
+  rec.save! if rec.changed?
 end
 
-SmokingAreaType.transaction do
-  SmokingAreaType.delete_all
-  SmokingAreaTypeData.each do |row|
-    r = row.transform_keys(&:to_sym)
-    SmokingAreaType.create!(
-      code:  r[:code],
-      name:  r[:name],
-      icon:  r[:icon],
-      color: r[:color]
-    )
-  end
-end
 
 #以下仮データ
 user = User.find_or_create_by!(email: "test@example.com") do |u|
@@ -57,7 +50,7 @@ user = User.find_or_create_by!(email: "test@example.com") do |u|
 end
 
 status = SmokingAreaStatus.find_by!(name: "公開中")
-area_type   = SmokingAreaType.find_by!(name: "公共")
+area_type   = SmokingAreaType.find_by!(code: "public")
 
 paper  = TobaccoType.find_by!(kinds: "紙タバコ")
 ecig   = TobaccoType.find_by!(kinds: "電子タバコ")
