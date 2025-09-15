@@ -31,15 +31,15 @@ SmokingAreaTypeData = [
 
 
 
-SmokingAreaTypeData.each do |row|
-  r = row.transform_keys(&:to_sym)
-  rec = SmokingAreaType.find_or_initialize_by(code: r[:code])
-  rec.assign_attributes(
-    name:  r[:name],
-    icon:  r[:icon],
-    color: r[:color]
+SmokingAreaTypeData.each do |attrs|
+  type_attrs = attrs.transform_keys(&:to_sym)
+  type_rec = SmokingAreaType.find_or_initialize_by(code: type_attrs[:code])
+  type_rec.assign_attributes(
+    name:  type_attrs[:name],
+    icon:  type_attrs[:icon],
+    color: type_attrs[:color]
   )
-  rec.save! if rec.changed?
+  type_rec.save! if type_rec.changed?
 end
 
 
