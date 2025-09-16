@@ -1,20 +1,24 @@
-t = TobaccoType.find_or_initialize_by(kinds: "紙タバコ")
-t.icon = "🚬"
-t.save!
+types = [
+  { kinds: "紙タバコ", icon: "🚬"},
+  { kinds: "電子タバコ", icon: "電子"}
+]
 
-t = TobaccoType.find_or_initialize_by(kinds: "電子タバコ")
-t.icon = "電子"
-t.save!
-
-SmokingAreaStatus.find_or_create_by!(name: "公開中")
-SmokingAreaStatus.find_or_create_by!(name: "公開停止中")
-
-ReportStatus.find_or_create_by!(name: "対応前")
-ReportStatus.find_or_create_by!(name: "対応済み")
-ReportStatus.find_or_create_by!(name: "対応中")
+types.each do |attrs|
+  rec = TobaccoType.find_or_initialize_by(kinds: attrs[:kinds])
+  rec.assign_attributes(icon: attrs[:icon])
+  rec.save! if rec.changed?
+end
 
 
-HEX6 = /\A#[0-9A-Fa-f]{6}\z/
+%w[公開中 公開停止中].each do |n|
+  SmokingAreaStatus.find_or_create_by!(name: n)
+end
+
+%w[対応前 対応済み 対応中].each do |n|
+  ReportStatus.find_or_create_by!(name: n)
+end
+
+
 
 SmokingAreaTypeData = [
   {code: "public",      name: "公共",     icon: "public",      color: "#1976D2"},
@@ -23,29 +27,20 @@ SmokingAreaTypeData = [
   {code: "cafe",        name: "カフェ",   icon: "cafe",        color: "#795548"},
   {code: "convenience", name: "コンビニ", icon: "convenience", color: "#FB8C00"},
   {code: "other",       name: "その他",   icon: "other",       color: "#9E9E9E"}
-]
+].freeze
 
 
-SmokingAreaTypeData.each do |row|
-  r = row.transform_keys(&:to_sym)
-  %i[code name icon color].each do |k|
-    raise "SmokingAreaTypeData missing #{k}: #{row.inspect}" if r[k].to_s.strip.empty?
-  end
-  raise "Invalid color format: #{r[:color]} (code=#{r[:code]})" unless r[:color].match?(HEX6)
+
+SmokingAreaTypeData.each do |attrs|
+  type_rec = SmokingAreaType.find_or_initialize_by(code: attrs[:code])
+  type_rec.assign_attributes(
+    name:  attrs[:name],
+    icon:  attrs[:icon],
+    color: attrs[:color]
+  )
+  type_rec.save! if type_rec.changed?
 end
 
-SmokingAreaType.transaction do
-  SmokingAreaType.delete_all
-  SmokingAreaTypeData.each do |row|
-    r = row.transform_keys(&:to_sym)
-    SmokingAreaType.create!(
-      code:  r[:code],
-      name:  r[:name],
-      icon:  r[:icon],
-      color: r[:color]
-    )
-  end
-end
 
 #以下仮データ
 user = User.find_or_create_by!(email: "test@example.com") do |u|
@@ -54,18 +49,39 @@ user = User.find_or_create_by!(email: "test@example.com") do |u|
 end
 
 status = SmokingAreaStatus.find_by!(name: "公開中")
-type   = SmokingAreaType.find_by!(name: "公共")
+area_type   = SmokingAreaType.find_by!(code: "public")
 
 paper  = TobaccoType.find_by!(kinds: "紙タバコ")
 ecig   = TobaccoType.find_by!(kinds: "電子タバコ")
 
-smk = SmokingArea.find_or_initialize_by(name: "新宿駅東口", address: "東京都新宿区新宿3丁目38")
-smk.assign_attributes(
+shinjuku_east_24h = SmokingArea.find_or_initialize_by(
+  name: "新宿駅東口（24時間）", 
+  address: "東京都新宿区新宿3丁目38"
+)
+shinjuku_east_24h.assign_attributes(
   user:                user,
   smoking_area_status: status,
-  smoking_area_type:   type,
+  smoking_area_type:   area_type,
   latitude:            35.6895,
-  longitude:           139.6917
+  longitude:           139.6917,
+  available_time_type: :always
 )
-smk.save!
-smk.tobacco_types = [paper, ecig]
+shinjuku_east_24h.save! if shinjuku_east_24h.changed?
+shinjuku_east_24h.tobacco_types = [paper, ecig]
+
+shinjuku_east_business = SmokingArea.find_or_initialize_by(
+  name: "新宿駅東口（時間指定 08:00-20:00）", 
+  address: "東京都新宿区新宿3丁目38"
+)
+shinjuku_east_business.assign_attributes(
+  user:                user,
+  smoking_area_status: status,
+  smoking_area_type:   area_type,
+  latitude:            35.6895,
+  longitude:           139.6917,
+  available_time_type:  :business,
+  available_time_start: "08:00",
+  available_time_end:   "20:00"
+)
+shinjuku_east_business.save! if shinjuku_east_business.changed?
+shinjuku_east_business.tobacco_types = [ecig]
