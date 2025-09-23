@@ -1,6 +1,6 @@
 class Photo < ApplicationRecord
   belongs_to :smoking_area
-  has_one_attached :image
+  has_one_attached :image, dependent: :purge_later
   has_many :reports, as: :targetable
 
   validates :image, presence: true
