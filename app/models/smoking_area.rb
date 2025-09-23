@@ -3,7 +3,7 @@ class SmokingArea < ApplicationRecord
   belongs_to :smoking_area_status
   belongs_to :smoking_area_type
 
-  has_many :photos
+  has_many :photos, dependent: :destroy
   has_many :comments
   has_many :smoking_area_tobacco_types
   has_many :tobacco_types, through: :smoking_area_tobacco_types
