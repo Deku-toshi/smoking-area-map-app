@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_21_123000) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_02_101244) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -119,7 +119,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_21_123000) do
     t.time "available_time_start"
     t.time "available_time_end"
     t.text "detail"
-    t.string "address", null: false
+    t.string "address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["smoking_area_status_id"], name: "index_smoking_areas_on_smoking_area_status_id"

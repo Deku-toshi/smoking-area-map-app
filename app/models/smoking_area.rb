@@ -9,7 +9,7 @@ class SmokingArea < ApplicationRecord
   has_many :tobacco_types, through: :smoking_area_tobacco_types
 
   validates :name, presence: true, length: {maximum: 100}
-  validates :address, presence: true, length: {maximum: 255}
+  validates :address, length: {maximum: 255}
   validates :detail, length: {maximum: 2000}, allow_blank: true
 
   validates :latitude, presence: true, numericality: { greater_than_or_equal_to: -90, less_than_or_equal_to: 90 }
