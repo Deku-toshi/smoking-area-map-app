@@ -17,6 +17,10 @@
 - [ ] 喫煙所を絞り込み検索
 - [ ] ログイン・ログアウト（JWT認証）
 
+## API仕様
+- 詳細な仕様・設計 : Notion https://www.notion.so/API-279f0859fd2d8031b817c8b23903b841?source=copy_link
+- OpenAPI (v0.1 下書き) : `docs/openapi.yaml`
+
 ## 🔧 ローカル環境での立ち上げ方法
 
 ### Rails API（バックエンド）
