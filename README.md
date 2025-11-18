@@ -21,6 +21,10 @@
 - 詳細な仕様・設計 : Notion https://www.notion.so/API-279f0859fd2d8031b817c8b23903b841?source=copy_link
 - OpenAPI (v0.1 下書き) : `docs/openapi.yaml`
 
+## Controller仕様
+- 詳細な仕様・設計 : Notion https://www.notion.so/2aaf0859fd2d80d39388ead5ef691519?source=copy_link
+- リポジトリ内設計ドキュメント `docs/controller_design.md`
+
 ## 🔧 ローカル環境での立ち上げ方法
 
 ### Rails API（バックエンド）
