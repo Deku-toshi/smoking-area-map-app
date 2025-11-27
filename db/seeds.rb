@@ -1,87 +1,64 @@
-types = [
-  { kinds: "紙タバコ", icon: "🚬"},
-  { kinds: "電子タバコ", icon: "電子"}
-]
+ActiveRecord::Base.transaction do  
+  tobacco_type_definitions = [
+    {name: "紙タバコ",   icon: "cigarette",            display_order: 1},
+    {name: "電子タバコ", icon: "electronic cigarette", display_order: 2}
+  ].freeze
 
-types.each do |attrs|
-  rec = TobaccoType.find_or_initialize_by(kinds: attrs[:kinds])
-  rec.assign_attributes(icon: attrs[:icon])
-  rec.save! if rec.changed?
+  tobacco_type_definitions.each do |tobacco_type_attrs|
+    tobacco_type = TobaccoType.find_or_initialize_by(name: tobacco_type_attrs[:name])
+    tobacco_type.assign_attributes(tobacco_type_attrs.except(:name)
+    )
+    tobacco_type.save!
+  end
+
+  tobacco_types_by_key = {
+    paper:      TobaccoType.find_by!(name: "紙タバコ"),
+    electronic: TobaccoType.find_by!(name: "電子タバコ")
+  }
+
+
+  #以下喫煙所仮データ
+  smoking_area_definitions= [
+    {
+      name: "新宿駅東口新宿区公共喫煙所",
+      latitude:  35.691123,
+      longitude: 139.703456,
+      detail: "東口出てすぐ。広くて人が多く汚い",
+      tobacco_keys: %i[paper electronic]
+    },
+    {
+      name: "西新宿駅正面口喫煙所",
+      latitude:  35.693893,
+      longitude: 139.700316,
+      detail: "西新宿駅正面口の目の前にある。広くて人が多いが、新宿駅東口新宿区公共喫煙所よりは綺麗",
+      tobacco_keys: %i[paper electronic]
+    },
+    {
+      name: "新宿駅西口喫煙所",
+      latitude: 35.691444,
+      longitude: 139.698987,
+      detail: "場所が少しわかりづらい",
+      tobacco_keys: %i[paper electronic]
+    }
+  ].freeze
+
+  smoking_area_definitions.each do |smoking_area_def|
+    tobacco_keys       = smoking_area_def.fetch(:tobacco_keys)
+    smoking_area_attrs = smoking_area_def.except(:tobacco_keys)
+
+    smoking_area = SmokingArea.find_or_initialize_by(
+      name:      smoking_area_attrs[:name],
+      latitude:  smoking_area_attrs[:latitude],
+      longitude: smoking_area_attrs[:longitude]
+    )
+    smoking_area.assign_attributes(smoking_area_attrs)
+    smoking_area.save!
+
+    tobacco_keys.each do |tobacco_type_key|
+      SmokingAreaTobaccoType.find_or_create_by!(
+        smoking_area: smoking_area,
+        tobacco_type: tobacco_types_by_key.fetch(tobacco_type_key)
+      )
+    end
+  end
 end
-
-
-%w[公開中 公開停止中].each do |n|
-  SmokingAreaStatus.find_or_create_by!(name: n)
-end
-
-%w[対応前 対応済み 対応中].each do |n|
-  ReportStatus.find_or_create_by!(name: n)
-end
-
-
-
-SmokingAreaTypeData = [
-  {code: "public",      name: "公共",     icon: "public",      color: "#1976D2"},
-  {code: "mall",        name: "施設内",   icon: "mall",        color: "#43A047"},
-  {code: "restaurant",  name: "飲食店",   icon: "restaurant",  color: "#8D6E63"},
-  {code: "cafe",        name: "カフェ",   icon: "cafe",        color: "#795548"},
-  {code: "convenience", name: "コンビニ", icon: "convenience", color: "#FB8C00"},
-  {code: "other",       name: "その他",   icon: "other",       color: "#9E9E9E"}
-].freeze
-
-
-
-SmokingAreaTypeData.each do |attrs|
-  type_rec = SmokingAreaType.find_or_initialize_by(code: attrs[:code])
-  type_rec.assign_attributes(
-    name:  attrs[:name],
-    icon:  attrs[:icon],
-    color: attrs[:color]
-  )
-  type_rec.save! if type_rec.changed?
-end
-
-
-#以下仮データ
-user = User.find_or_create_by!(email: "test@example.com") do |u|
-  u.password = "password"
-  u.name     = "テストユーザー"
-end
-
-status = SmokingAreaStatus.find_by!(name: "公開中")
-area_type   = SmokingAreaType.find_by!(code: "public")
-
-paper  = TobaccoType.find_by!(kinds: "紙タバコ")
-ecig   = TobaccoType.find_by!(kinds: "電子タバコ")
-
-shinjuku_east_24h = SmokingArea.find_or_initialize_by(
-  name: "新宿駅東口（24時間）", 
-  address: "東京都新宿区新宿3丁目38"
-)
-shinjuku_east_24h.assign_attributes(
-  user:                user,
-  smoking_area_status: status,
-  smoking_area_type:   area_type,
-  latitude:            35.6895,
-  longitude:           139.6917,
-  available_time_type: :always
-)
-shinjuku_east_24h.save! if shinjuku_east_24h.changed?
-shinjuku_east_24h.tobacco_types = [paper, ecig]
-
-shinjuku_east_business = SmokingArea.find_or_initialize_by(
-  name: "新宿駅東口（時間指定 08:00-20:00）", 
-  address: "東京都新宿区新宿3丁目38"
-)
-shinjuku_east_business.assign_attributes(
-  user:                user,
-  smoking_area_status: status,
-  smoking_area_type:   area_type,
-  latitude:            35.6895,
-  longitude:           139.6917,
-  available_time_type:  :business,
-  available_time_start: "08:00",
-  available_time_end:   "20:00"
-)
-shinjuku_east_business.save! if shinjuku_east_business.changed?
-shinjuku_east_business.tobacco_types = [ecig]
