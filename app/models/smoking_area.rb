@@ -1,10 +1,10 @@
 class SmokingArea < ApplicationRecord
   has_many :smoking_area_tobacco_types, dependent: :destroy
-  has_many :tobacco_types, through: :smoking_area_tobacco_types
+  has_many :tobacco_types, -> { order(:display_order) }, through: :smoking_area_tobacco_types
 
-  validates :name,    presence: true, length: {maximum: 100}
-  validates :address, length: {maximum: 255}
-  validates :detail,  length: {maximum: 2000}
+  validates :name,    presence: true, length:  { maximum: 100 }
+  validates :address, length: { maximum: 255 }
+  validates :detail,  length: { maximum: 2000 }
 
   validates :latitude, 
              presence: true, 
