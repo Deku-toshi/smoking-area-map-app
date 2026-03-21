@@ -30,7 +30,7 @@ export const useSmokingAreas = (params?: SmokingAreaSearchParams): UseSmokingAre
 
     useEffect(() => {
         refetch();
-    }, [params?.tobaccoTypeId, params?.query]);
+    }, [params?.tobaccoTypeId, params?.electronicOnly]);
 
     return { data, isLoading, error, refetch };
 };

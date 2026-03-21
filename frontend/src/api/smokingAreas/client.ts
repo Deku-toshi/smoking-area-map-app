@@ -8,13 +8,13 @@ import type { QueryParams } from "../httpClient";
 const buildSmokingAreasQuery = (params?: SmokingAreaSearchParams): QueryParams | undefined => {
     if (!params) return undefined;
 
-    const { tobaccoTypeId, query } = params;
+    const { tobaccoTypeId, electronicOnly } = params;
 
-    if (tobaccoTypeId === undefined && query === undefined) return undefined;
+    if (tobaccoTypeId === undefined && electronicOnly === undefined) return undefined;
 
     return {
         tobacco_type_id: tobaccoTypeId,
-        query,
+        electronic_only: electronicOnly ? "true" : undefined,
     };
 };
 
