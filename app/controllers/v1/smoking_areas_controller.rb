@@ -1,25 +1,25 @@
 class V1::SmokingAreasController < ApplicationController
   def index
-    smoking_areas = SmokingArea.order(:id).includes(:tobacco_types)
+    smoking_areas = SmokingArea.all
 
-    # たばこ種別フィルタ（tobacco_type_id が指定された場合）
-    if params[:tobacco_type_id].present?
+    if params[:electronic_only].present?
+      paper_id      = TobaccoType.find_by!(name: "紙タバコ").id
+      electronic_id = TobaccoType.find_by!(name: "電子タバコ").id
+
       smoking_areas = smoking_areas
         .joins(:tobacco_types)
-        .where(tobacco_types: { id: params[:tobacco_type_id] })
+        .where(tobacco_types: { id: electronic_id })
+        .where.not(id: SmokingArea.joins(:tobacco_types).where(tobacco_types: { id: paper_id }))
+    
+    elsif params[:tobacco_type_id].present?
+      filtered_ids = SmokingArea
+        .joins(:tobacco_types)
+        .where(tobacco_types: { id: params[:tobacco_type_id]})
+        .select(:id)
+      smoking_areas = smoking_areas.where(id: filtered_ids)
     end
 
-    # 名前検索（query が指定されていて、実質的な文字がある場合）
-    if params[:query].present?
-      query = params[:query].squish  # 前後の空白 + 連続空白 + 全角スペースも正規化
-      if query != ""
-        smoking_areas = smoking_areas.where("smoking_areas.name ILIKE ?", "%#{query}%")
-      end
-    end
-
-    # join で重複する可能性があるので distinct、
-    # かつ既存仕様どおり id 昇順で返す
-    smoking_areas = smoking_areas.distinct.order(:id)
+    smoking_areas = smoking_areas.includes(:tobacco_types).distinct.order(:id)
 
     render json: (smoking_areas.map do |smoking_area|
       {
