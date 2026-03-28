@@ -23,21 +23,18 @@ ActiveRecord::Base.transaction do
       name: "新宿駅東口新宿区公共喫煙所",
       latitude:  35.691123,
       longitude: 139.703456,
-      detail: "東口出てすぐ。広くて人が多く汚い",
       tobacco_keys: %i[paper electronic]
     },
     {
       name: "西新宿駅正面口喫煙所",
       latitude:  35.693893,
       longitude: 139.700316,
-      detail: "西新宿駅正面口の目の前にある。広くて人が多いが、新宿駅東口新宿区公共喫煙所よりは綺麗",
       tobacco_keys: %i[paper electronic]
     },
     {
       name: "新宿駅西口喫煙所",
       latitude: 35.691444,
       longitude: 139.698987,
-      detail: "場所が少しわかりづらい",
       tobacco_keys: %i[paper electronic]
     }
   ].freeze

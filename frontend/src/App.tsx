@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useSmokingAreas } from "./features/smokingAreas/hooks/useSmokingAreas";
-import { useSmokingAreaDetail } from "./features/smokingAreas/hooks/useSmokingAreaDetail";
 import { useTobaccoTypes } from "./features/smokingAreas/hooks/useTobaccoTypes";
 import { SmokingAreasMap } from "./SmokingAreasMap";
 import type { SmokingAreaSearchParams } from "./features/smokingAreas/types"
@@ -10,8 +9,6 @@ export default function App() {
   const [ selectedId, setSelectedId ] = useState<number | null>(null);
 
   const { data, isLoading, error, refetch } = useSmokingAreas(params);
-
-  const { data: detail } = useSmokingAreaDetail(selectedId);
   const { data: tobaccoTypes } = useTobaccoTypes();
 
   useEffect(() => {
@@ -25,7 +22,6 @@ export default function App() {
       smokingAreas={data}
       selectedId={selectedId}
       setSelectedId={setSelectedId}
-      detail={detail}
       tobaccoTypes={tobaccoTypes ?? []}
       params={params}
       setParams={setParams}

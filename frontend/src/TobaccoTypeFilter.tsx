@@ -6,15 +6,16 @@ type TobaccoTypeProps = {
 };
 
 const FILTER_OPTIONS = [
-  {key: "paper", label: "紙タバコ", tobaccoTypeId: 1},
-  {key: "electronic_only", label: "電子タバコのみ", electronicOnly: true}
+  {key: "paper", label: "紙タバコ", icon: "🚬", tobaccoTypeId: 1},
+  {key: "electronic_only", label: "電子タバコのみ", icon: "/electronic-cigarette.png", electronicOnly: true}
 ] as const;
 
 export const TobaccoTypeFilter = ({ params, setParams }: TobaccoTypeProps) => {
 
   return (
       <>
-      {FILTER_OPTIONS.map((option) => {
+      <div  className="filter-buttons">
+        {FILTER_OPTIONS.map((option) => {
           const isActive = option.key === "paper" ? params.tobaccoTypeId === option.tobaccoTypeId : params.electronicOnly === true;
           return <button type="button" key={option.key} 
             onClick={() => {
@@ -27,8 +28,12 @@ export const TobaccoTypeFilter = ({ params, setParams }: TobaccoTypeProps) => {
               };
             }}
             aria-pressed={isActive} className={isActive ? "button button--active" : "button"}>
-          {option.label}</button>
+            {option.key === "paper" 
+              ? <span>{option.icon} {option.label}</span> 
+              : <span><img src={option.icon} alt="電子タバコ" className="button-icon" />{option.label}</span>}
+          </button>
         })}
+      </div>
       </>
   );
 };

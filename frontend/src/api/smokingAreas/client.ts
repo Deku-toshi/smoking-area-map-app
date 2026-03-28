@@ -1,7 +1,7 @@
 import { fetchJson } from "../httpClient";
-import { toSmokingAreaDisplay, toSmokingAreaDetail } from "./mapper";
-import type { ApiSmokingAreaIndexItem, ApiSmokingAreaShow } from "./types";
-import type { SmokingAreaDisplay, SmokingAreaDetail, SmokingAreaSearchParams } from "../../features/smokingAreas/types";
+import { toSmokingAreaDisplay } from "./mapper";
+import type { ApiSmokingAreaIndexItem } from "./types";
+import type { SmokingAreaDisplay, SmokingAreaSearchParams } from "../../features/smokingAreas/types";
 import type { QueryParams } from "../httpClient";
 
 
@@ -22,9 +22,4 @@ export const fetchSmokingAreas = async (params?: SmokingAreaSearchParams): Promi
     const query = buildSmokingAreasQuery(params);
     const apiItems = await fetchJson<ApiSmokingAreaIndexItem[]>("/v1/smoking_areas", { query });
     return apiItems.map(toSmokingAreaDisplay);
-};
-
-export const fetchSmokingAreaDetail = async (id: number): Promise<SmokingAreaDetail> => {
-    const api = await fetchJson<ApiSmokingAreaShow>(`/v1/smoking_areas/${id}`);
-    return toSmokingAreaDetail(api);
 };
