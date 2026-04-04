@@ -78,7 +78,8 @@ export const SmokingAreasMap = ({ smokingAreas, selectedId, setSelectedId, tobac
             return <AdvancedMarker 
             key={smokingArea.id} 
             position={{ lat: smokingArea.latitude, lng: smokingArea.longitude}}
-            onClick={() => setSelectedId(isSelected ? null : smokingArea.id)}>
+            onClick={() => setSelectedId(isSelected ? null : smokingArea.id)}
+            zIndex={isSelected ? 5 : 0}>
               <div className="marker-wrapper">
                 <div className={isSelected ? "marker-dot marker-dot--selected" : "marker-dot"}/>
                 {isSelected && (
