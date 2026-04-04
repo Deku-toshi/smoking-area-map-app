@@ -105,8 +105,9 @@ ActiveRecord::Base.transaction do
     smoking_area.assign_attributes(smoking_area_attrs)
     smoking_area.save!
 
+    smoking_area.smoking_area_tobacco_types.destroy_all
     tobacco_keys.each do |tobacco_type_key|
-      SmokingAreaTobaccoType.find_or_create_by!(
+      SmokingAreaTobaccoType.create!(
         smoking_area: smoking_area,
         tobacco_type: tobacco_types_by_key.fetch(tobacco_type_key)
       )
