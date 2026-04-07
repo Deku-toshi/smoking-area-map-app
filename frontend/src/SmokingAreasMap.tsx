@@ -65,6 +65,7 @@ export const SmokingAreasMap = ({ smokingAreas, selectedId, setSelectedId, tobac
 
   return (
     <div className="map-container">
+      <TobaccoTypeFilter params={params} setParams={setParams}/>
       {isLoading && <div className="loading-overlay">Loading...</div>}
       {error && 
         <div className="error-overlay">
@@ -75,11 +76,8 @@ export const SmokingAreasMap = ({ smokingAreas, selectedId, setSelectedId, tobac
         <Map defaultCenter={defaultCenter} defaultZoom={17} mapId={mapId} 
         fullscreenControl={isMobile ? false : true} disableDefaultUI={true} zoomControl={isMobile ? false : true} clickableIcons={false} 
         keyboardShortcuts={false} draggableCursor="default" draggingCursor="move" onClick={() => setSelectedId(null)}>
-          <CurrentLocationHandler position={position} />
-          <MapControl position={ControlPosition.TOP_LEFT}>
-            <TobaccoTypeFilter params={params} setParams={setParams} />
-          </MapControl>
-          {position && <AdvancedMarker position={position} />}
+          <CurrentLocationHandler position={position}/>
+          {position && <AdvancedMarker position={position}/>}
           {smokingAreas.map((smokingArea) => {
             const isSelected = selectedId === smokingArea.id;
             return <AdvancedMarker 
