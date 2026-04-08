@@ -161,7 +161,7 @@ body {
   color: #1B3A5C;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   .button {
     padding: 5px 8px;
     font-size: 12px;
