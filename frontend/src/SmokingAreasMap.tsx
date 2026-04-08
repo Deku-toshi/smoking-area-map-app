@@ -39,6 +39,13 @@ export const SmokingAreasMap = ({ smokingAreas, selectedId, setSelectedId, tobac
   const mapId = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID;
 
   const [position, setPosition] = useState<{lat: number, lng: number} | null>(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1025);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1025);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [])
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -58,6 +65,7 @@ export const SmokingAreasMap = ({ smokingAreas, selectedId, setSelectedId, tobac
 
   return (
     <div className="map-container">
+      <TobaccoTypeFilter params={params} setParams={setParams}/>
       {isLoading && <div className="loading-overlay">Loading...</div>}
       {error && 
         <div className="error-overlay">
@@ -66,13 +74,10 @@ export const SmokingAreasMap = ({ smokingAreas, selectedId, setSelectedId, tobac
         </div>}
       <APIProvider apiKey={apiKey} libraries={['marker']}>
         <Map defaultCenter={defaultCenter} defaultZoom={17} mapId={mapId} 
-        fullscreenControl={true}disableDefaultUI={true} zoomControl={true} clickableIcons={false} 
+        fullscreenControl={isMobile ? false : true} disableDefaultUI={true} zoomControl={isMobile ? false : true} clickableIcons={false} 
         keyboardShortcuts={false} draggableCursor="default" draggingCursor="move" onClick={() => setSelectedId(null)}>
-          <CurrentLocationHandler position={position} />
-          <MapControl position={ControlPosition.TOP_LEFT}>
-            <TobaccoTypeFilter params={params} setParams={setParams} />
-          </MapControl>
-          {position && <AdvancedMarker position={position} />}
+          <CurrentLocationHandler position={position}/>
+          {position && <AdvancedMarker position={position}/>}
           {smokingAreas.map((smokingArea) => {
             const isSelected = selectedId === smokingArea.id;
             return <AdvancedMarker 
