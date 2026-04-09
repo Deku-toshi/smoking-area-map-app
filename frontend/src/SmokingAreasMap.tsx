@@ -1,10 +1,10 @@
-import {  APIProvider, Map, AdvancedMarker, MapControl, ControlPosition, useMap } from "@vis.gl/react-google-maps";
-import { TobaccoTypeFilter }  from "./TobaccoTypeFilter"
+import { APIProvider, Map, AdvancedMarker, MapControl, ControlPosition, useMap } from "@vis.gl/react-google-maps";
+import { TobaccoTypeFilter } from "./TobaccoTypeFilter"
 import type { SmokingAreaDisplay, TobaccoType, SmokingAreaSearchParams } from "./features/smokingAreas/types";
 import { useEffect, useState } from "react";
 import { LocateFixed } from "lucide-react";
 
-type SmokingAreasMapProps = { 
+type SmokingAreasMapProps = {
   smokingAreas: SmokingAreaDisplay[];
   isLoading: boolean;
   error: Error | null;
@@ -73,31 +73,45 @@ export const SmokingAreasMap = ({ smokingAreas, selectedId, setSelectedId, tobac
           <button onClick={refetch}>再取得</button>
         </div>}
       <APIProvider apiKey={apiKey} libraries={['marker']}>
-        <Map defaultCenter={defaultCenter} defaultZoom={17} mapId={mapId} 
-        fullscreenControl={isMobile ? false : true} disableDefaultUI={true} zoomControl={isMobile ? false : true} clickableIcons={false} 
-        keyboardShortcuts={false} draggableCursor="default" draggingCursor="move" onClick={() => setSelectedId(null)}>
+        <Map 
+          defaultCenter={defaultCenter}
+          defaultZoom={16}
+          mapId={mapId}
+          fullscreenControl={isMobile ? false : true}
+          disableDefaultUI={true}
+          zoomControl={isMobile ? false : true}
+          clickableIcons={false}
+          keyboardShortcuts={false}
+          draggableCursor="default"
+          draggingCursor="move"
+          onClick={() => setSelectedId(null)}>
           <CurrentLocationHandler position={position}/>
           {position && <AdvancedMarker position={position}/>}
           {smokingAreas.map((smokingArea) => {
             const isSelected = selectedId === smokingArea.id;
-            return <AdvancedMarker 
-            key={smokingArea.id} 
-            position={{ lat: smokingArea.latitude, lng: smokingArea.longitude}}
-            onClick={() => setSelectedId(isSelected ? null : smokingArea.id)}
-            zIndex={isSelected ? 5 : 0}>
-              <div className="marker-wrapper">
-                <div className={isSelected ? "marker-dot marker-dot--selected" : "marker-dot"}/>
-                {isSelected && (
-                  <div className="marker-popup" onClick={(e) => e.stopPropagation()}>
-                    <button className="marker-popup-close" onClick={(e) => { e.stopPropagation(); setSelectedId(null); }}>×</button>
-                    <div className="marker-popup-name"><strong>{smokingArea.name}</strong></div>
-                    <div>対応：{selectedTobaccoTypes}</div>
-                  </div>)}
-              </div>
-            </AdvancedMarker>
+            return (
+              <AdvancedMarker 
+                key={smokingArea.id} 
+                position={{ lat: smokingArea.latitude, lng: smokingArea.longitude}}
+                onClick={() => setSelectedId(isSelected ? null : smokingArea.id)}
+                zIndex={isSelected ? 5 : 0}>
+                <div className="marker-wrapper">
+                  <div className={isSelected ? "marker-dot marker-dot--selected" : "marker-dot"}/>
+                  {isSelected && (
+                    <div className="marker-popup" onClick={(e) => e.stopPropagation()}>
+                      <button className="marker-popup-close" onClick={(e) => { e.stopPropagation(); setSelectedId(null); }}>×</button>
+                      <div className="marker-popup-name">
+                        <strong>{smokingArea.name}</strong>
+                      </div>
+                      <div>対応：{selectedTobaccoTypes}</div>
+                    </div>
+                  )}
+                </div>
+              </AdvancedMarker>
+            );
           })}
         </Map>
       </APIProvider>
     </div>
-  )
+  );
 };

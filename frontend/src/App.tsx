@@ -15,6 +15,8 @@ export default function App() {
     if (selectedId === null) return;
     const found = data.find((area) => area.id === selectedId);
     if (!found) setSelectedId(null);
+    // dataが変わったとき（タバコ種別フィルターでの変更時）のみ実行し、選択中のidをリセット
+    // selectedIdの変化には反応不要のため依存配列から除外（ESLint導入時はdisableコメントを追加）
   }, [data]);
 
   return (

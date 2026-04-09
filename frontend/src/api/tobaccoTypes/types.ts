@@ -1,6 +1,6 @@
 export type ApiTobaccoType = {
-    id: number;
-    name: string;
-    icon: string;
-    display_order: number;
+  id: number;
+  name: string;
+  icon: string;
+  display_order: number;
 };
