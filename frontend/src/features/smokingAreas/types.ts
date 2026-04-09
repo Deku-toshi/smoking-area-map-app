@@ -8,7 +8,8 @@ export type SmokingAreaDisplay = {
 
 export type SmokingAreaSearchParams = {
   tobaccoTypeId?: number;
-  query?: string;electronicOnly?: boolean;
+  query?: string;
+  electronicOnly?: boolean;
 };
 
 export type TobaccoType = {

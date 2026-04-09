@@ -11,26 +11,26 @@ type UseTobaccoTypesResult = {
 };
 
 export const useTobaccoTypes = (): UseTobaccoTypesResult => {
-    const [data, setData] = useState<TobaccoType[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<Error | null>(null);
+  const [data, setData] = useState<TobaccoType[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
 
-    const refetch = async () => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            const tobaccoTypes = await fetchTobaccoTypes();
-            setData(tobaccoTypes);
-        } catch (e) {
-            setError(toError(e));
-        } finally {
-            setIsLoading(false);
-        }
-    };
+  const refetch = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const tobaccoTypes = await fetchTobaccoTypes();
+      setData(tobaccoTypes);
+    } catch (e) {
+      setError(toError(e));
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    useEffect(() => {
-        refetch();
-    }, [])
+  useEffect(() => {
+    refetch();
+  }, []);
 
-    return { data, isLoading, error, refetch };
+  return { data, isLoading, error, refetch };
 };

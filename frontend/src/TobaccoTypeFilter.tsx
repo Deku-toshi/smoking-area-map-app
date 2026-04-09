@@ -11,13 +11,12 @@ const FILTER_OPTIONS = [
 ] as const;
 
 export const TobaccoTypeFilter = ({ params, setParams }: TobaccoTypeProps) => {
-
   return (
-      <>
-      <div  className="filter-buttons">
-        {FILTER_OPTIONS.map((option) => {
-          const isActive = option.key === "paper" ? params.tobaccoTypeId === option.tobaccoTypeId : params.electronicOnly === true;
-          return <button type="button" key={option.key} 
+    <div className="filter-buttons">
+      {FILTER_OPTIONS.map((option) => {
+        const isActive = option.key === "paper" ? params.tobaccoTypeId === option.tobaccoTypeId : params.electronicOnly === true;
+        return (
+          <button type="button" key={option.key} 
             onClick={() => {
               if (isActive) {
                 setParams({});
@@ -32,8 +31,8 @@ export const TobaccoTypeFilter = ({ params, setParams }: TobaccoTypeProps) => {
               ? <span>{option.icon} {option.label}</span> 
               : <span><img src={option.icon} alt="電子タバコ" className="button-icon" />{option.label}</span>}
           </button>
-        })}
-      </div>
-      </>
+        );
+      })}
+    </div>
   );
 };
