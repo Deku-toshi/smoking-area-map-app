@@ -15,8 +15,8 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  username: deku
-  password: toshi3free
+  username: <%= ENV.fetch("DATABASE_USERNAME") { "deku" } %>
+  password: <%= ENV.fetch("DATABASE_PASSWORD") { "" } %>
   host: localhost
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
