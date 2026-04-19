@@ -7,7 +7,7 @@ export type HttpRequestOptions = {
   query?: QueryParams;
 };
 
-const API_BASE_URL = "http://localhost:5173";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
 const buildUrl = (path: string, query?: QueryParams): string => {
   const urlObj = new URL(path, API_BASE_URL);
