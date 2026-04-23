@@ -1,0 +1,17 @@
+{
+  "name": "一服",
+  "short_name": "一服",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1B3A5C",
+  "theme_color": "#1B3A5C",
+  "orientation" : "portrait",
+  "lang" : "ja"
+}
