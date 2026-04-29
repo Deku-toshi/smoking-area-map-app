@@ -73,7 +73,7 @@ export const SmokingAreasMap = ({ smokingAreas, selectedId, setSelectedId, tobac
           <button onClick={refetch}>再取得</button>
         </div>}
       <APIProvider apiKey={apiKey} libraries={['marker']}>
-        <Map 
+        <Map
           defaultCenter={defaultCenter}
           defaultZoom={16}
           mapId={mapId}
@@ -84,6 +84,7 @@ export const SmokingAreasMap = ({ smokingAreas, selectedId, setSelectedId, tobac
           keyboardShortcuts={false}
           draggableCursor="default"
           draggingCursor="move"
+          gestureHandling="greedy"
           onClick={() => setSelectedId(null)}>
           <CurrentLocationHandler position={position}/>
           {position && <AdvancedMarker position={position}/>}
