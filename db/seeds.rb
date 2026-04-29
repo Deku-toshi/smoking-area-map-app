@@ -1,4 +1,4 @@
-ActiveRecord::Base.transaction do  
+ActiveRecord::Base.transaction do
   tobacco_type_definitions = [
     {name: "紙タバコ",   icon: "cigarette",            display_order: 1},
     {name: "電子タバコ", icon: "electronic cigarette", display_order: 2}
@@ -6,8 +6,7 @@ ActiveRecord::Base.transaction do
 
   tobacco_type_definitions.each do |tobacco_type_attrs|
     tobacco_type = TobaccoType.find_or_initialize_by(name: tobacco_type_attrs[:name])
-    tobacco_type.assign_attributes(tobacco_type_attrs.except(:name)
-    )
+    tobacco_type.assign_attributes(tobacco_type_attrs.except(:name))
     tobacco_type.save!
   end
 
@@ -16,9 +15,8 @@ ActiveRecord::Base.transaction do
     electronic: TobaccoType.find_by!(name: "電子タバコ")
   }
 
-
   #以下喫煙所実データ
-  smoking_area_definitions= [
+  smoking_area_definitions = [
     {
       name: "新宿駅東口新宿区公共喫煙所",
       latitude:  35.6923331,

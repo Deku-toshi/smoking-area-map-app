@@ -10,11 +10,11 @@ class V1::SmokingAreasController < ApplicationController
         .joins(:tobacco_types)
         .where(tobacco_types: { id: electronic_id })
         .where.not(id: SmokingArea.joins(:tobacco_types).where(tobacco_types: { id: paper_id }))
-    
+
     elsif params[:tobacco_type_id].present?
       filtered_ids = SmokingArea
         .joins(:tobacco_types)
-        .where(tobacco_types: { id: params[:tobacco_type_id]})
+        .where(tobacco_types: { id: params[:tobacco_type_id] })
         .select(:id)
       smoking_areas = smoking_areas.where(id: filtered_ids)
     end
@@ -30,26 +30,5 @@ class V1::SmokingAreasController < ApplicationController
         tobacco_type_ids: smoking_area.tobacco_types.map { |tobacco_type| tobacco_type.id }
       }
     end)
-  end
-
-  def show
-    smoking_area = SmokingArea.includes(:tobacco_types).find(params[:id])
-
-    render json: { 
-      id:   smoking_area.id,
-      name: smoking_area.name,
-      latitude:  smoking_area.latitude,
-      longitude: smoking_area.longitude,
-      is_indoor: smoking_area.is_indoor,
-      detail:    smoking_area.detail,
-      address:   smoking_area.address,
-      tobacco_types: smoking_area.tobacco_types.map do |tobacco_type|
-         {
-           id:   tobacco_type.id,
-           name: tobacco_type.name,
-           icon: tobacco_type.icon
-         }
-      end
-    }
   end
 end
