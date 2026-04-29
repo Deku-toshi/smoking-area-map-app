@@ -10,11 +10,11 @@ class V1::SmokingAreasController < ApplicationController
         .joins(:tobacco_types)
         .where(tobacco_types: { id: electronic_id })
         .where.not(id: SmokingArea.joins(:tobacco_types).where(tobacco_types: { id: paper_id }))
-    
+
     elsif params[:tobacco_type_id].present?
       filtered_ids = SmokingArea
         .joins(:tobacco_types)
-        .where(tobacco_types: { id: params[:tobacco_type_id]})
+        .where(tobacco_types: { id: params[:tobacco_type_id] })
         .select(:id)
       smoking_areas = smoking_areas.where(id: filtered_ids)
     end

@@ -6,17 +6,17 @@ class SmokingArea < ApplicationRecord
   validates :address, length: { maximum: 255 }
   validates :detail,  length: { maximum: 2000 }
 
-  validates :latitude, 
-             presence: true, 
-             numericality: { greater_than_or_equal_to: -90, 
+  validates :latitude,
+             presence: true,
+             numericality: { greater_than_or_equal_to: -90,
                              less_than_or_equal_to: 90 }
-                             
-  validates :longitude, 
-             presence: true, 
-             numericality: { greater_than_or_equal_to: -180, 
+
+  validates :longitude,
+             presence: true,
+             numericality: { greater_than_or_equal_to: -180,
                              less_than_or_equal_to: 180 }
 
-  validates :is_indoor, inclusion: {in: [true, false]}, allow_nil: true
+  validates :is_indoor, inclusion: { in: [true, false] }, allow_nil: true
 
   before_validation :normalize_tobacco_types 
   validate :must_have_tobacco_types
