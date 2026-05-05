@@ -41,6 +41,8 @@ export const SmokingAreasMap = ({ smokingAreas, selectedId, setSelectedId, tobac
   const [position, setPosition] = useState<{lat: number, lng: number} | null>(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1025);
 
+  const { data: tobaccoTypes, refetch: refetchTobaccoTypes } = useTobaccoTypes();
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1025);
     window.addEventListener("resize", handleResize);
