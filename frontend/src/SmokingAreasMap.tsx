@@ -1,19 +1,18 @@
 import { APIProvider, Map, AdvancedMarker, MapControl, ControlPosition, useMap } from "@vis.gl/react-google-maps";
 import { TobaccoTypeFilter } from "./TobaccoTypeFilter"
-import type { SmokingAreaDisplay, TobaccoType, SmokingAreaSearchParams } from "./features/smokingAreas/types";
+import { useTobaccoTypes } from "./features/smokingAreas/hooks/useTobaccoTypes";
 import { useEffect, useState } from "react";
 import { LocateFixed } from "lucide-react";
+import type { SmokingAreaDisplay, SmokingAreaSearchParams } from "./features/smokingAreas/types";
+import type { FetchState } from "./types/fetchState";
 
 type SmokingAreasMapProps = {
-  smokingAreas: SmokingAreaDisplay[];
-  isLoading: boolean;
-  error: Error | null;
+  state: FetchState<SmokingAreaDisplay[]>;
   selectedId: number | null;
   setSelectedId: (id: number | null) => void;
-  tobaccoTypes: TobaccoType[];
   params: SmokingAreaSearchParams
   setParams: (params: SmokingAreaSearchParams) => void;
-  refetch: () => Promise<void>;
+  refetchSmokingAreas: () => Promise<void>;
 };
 
 const CurrentLocationHandler = ({ position }: { position: { lat: number, lng: number } | null }) => {
@@ -34,7 +33,7 @@ const CurrentLocationHandler = ({ position }: { position: { lat: number, lng: nu
   );
 };
 
-export const SmokingAreasMap = ({ smokingAreas, selectedId, setSelectedId, tobaccoTypes, params, setParams, isLoading, error, refetch }: SmokingAreasMapProps) => {
+export const SmokingAreasMap = ({ state, selectedId, setSelectedId, params, setParams, refetchSmokingAreas }: SmokingAreasMapProps) => {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
   const mapId = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID;
 
@@ -55,7 +54,13 @@ export const SmokingAreasMap = ({ smokingAreas, selectedId, setSelectedId, tobac
     });
   }, []);
 
-  const selectedSmokingArea = selectedId === null ? null : smokingAreas.find((smokingArea) => smokingArea.id === selectedId) ?? null;
+  const getSelectedSmokingArea = (): SmokingAreaDisplay | null => {
+    if (selectedId === null) return null;
+    if (state.status !== "success") return null;
+    return state.data.find((smokingArea) => smokingArea.id === selectedId) ?? null;
+  };
+
+  const selectedSmokingArea = getSelectedSmokingArea();
 
   const selectedTobaccoTypeIds = selectedSmokingArea?.tobaccoTypeIds ?? []
   const selectedTobaccoTypes = tobaccoTypes.filter((tobaccoType) => selectedTobaccoTypeIds.includes(tobaccoType.id))
@@ -68,11 +73,11 @@ export const SmokingAreasMap = ({ smokingAreas, selectedId, setSelectedId, tobac
   return (
     <div className="map-container">
       <TobaccoTypeFilter params={params} setParams={setParams}/>
-      {isLoading && <div className="loading-overlay">Loading...</div>}
-      {error && 
+      {state.status === "loading" && <div className="loading-overlay">Loading...</div>}
+      {state.status === "error" &&
         <div className="error-overlay">
           <p>データの取得に失敗しました</p>
-          <button onClick={refetch}>再取得</button>
+          <button onClick={() => { refetchSmokingAreas(); refetchTobaccoTypes(); }}>再取得</button>
         </div>}
       <APIProvider apiKey={apiKey} libraries={['marker']}>
         <Map
@@ -90,7 +95,7 @@ export const SmokingAreasMap = ({ smokingAreas, selectedId, setSelectedId, tobac
           onClick={() => setSelectedId(null)}>
           <CurrentLocationHandler position={position}/>
           {position && <AdvancedMarker position={position}/>}
-          {smokingAreas.map((smokingArea) => {
+          {state.status === "success" && state.data.map((smokingArea) => {
             const isSelected = selectedId === smokingArea.id;
             return (
               <AdvancedMarker 
