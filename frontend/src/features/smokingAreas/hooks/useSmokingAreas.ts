@@ -1,30 +1,24 @@
 import type { SmokingAreaDisplay, SmokingAreaSearchParams } from "../types";
+import type { FetchState } from "../../../types/fetchState";
 import { fetchSmokingAreas } from "../../../api/smokingAreas/client";
 import { useEffect, useState } from "react";
 import { toError } from "./toError";
 
 type UseSmokingAreasResult = {
-  data: SmokingAreaDisplay[];
-  isLoading: boolean;
-  error: Error | null;
+  state: FetchState<SmokingAreaDisplay[]>;
   refetch: () => Promise<void>;
 };
 
 export const useSmokingAreas = (params?: SmokingAreaSearchParams): UseSmokingAreasResult => {
-  const [data, setData] = useState<SmokingAreaDisplay[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [state, setState] = useState<FetchState<SmokingAreaDisplay[]>>({ status: "loading" });
 
   const refetch = async () => {
-    setIsLoading(true);
-    setError(null);
+    setState({ status: "loading" });
     try {
       const smokingAreas = await fetchSmokingAreas(params);
-      setData(smokingAreas);
+      setState({ status: "success", data: smokingAreas });
     } catch (e) {
-      setError(toError(e));
-    } finally {
-      setIsLoading(false);
+      setState({ status: "error", error: toError(e) });
     }
   };
 
@@ -32,5 +26,5 @@ export const useSmokingAreas = (params?: SmokingAreaSearchParams): UseSmokingAre
     refetch();
   }, [params?.tobaccoTypeId, params?.electronicOnly]);
 
-  return { data, isLoading, error, refetch };
+  return { state, refetch };
 };
