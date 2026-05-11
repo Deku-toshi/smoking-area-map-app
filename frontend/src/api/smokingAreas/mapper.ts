@@ -1,4 +1,4 @@
-import type { ApiSmokingAreaIndexItem } from "./types";
+import type { ApiSmokingAreaIndexItem } from "./schema";
 import type { SmokingAreaDisplay } from "../../features/smokingAreas/types";
 
 export const toSmokingAreaDisplay = (api: ApiSmokingAreaIndexItem): SmokingAreaDisplay => {
