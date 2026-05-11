@@ -22,10 +22,10 @@ const buildUrl = (path: string, query?: QueryParams): string => {
   return urlObj.toString();
 };
 
-export const fetchJson = async <T>(
+export const fetchJson = async (
   path: string,
   options: HttpRequestOptions = {},
-): Promise<T> => {
+): Promise<unknown> => {
   const requestUrl = buildUrl(path, options.query);
 
   const response = await fetch(requestUrl, {
@@ -36,6 +36,5 @@ export const fetchJson = async <T>(
     throw new Error(`HTTP error: ${response.status}`);
   }
 
-  const data = (await response.json()) as T;
-  return data;
+  return response.json();
 };
