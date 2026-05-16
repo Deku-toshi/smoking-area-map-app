@@ -1,8 +1,8 @@
 import { APIProvider, Map, AdvancedMarker, MapControl, ControlPosition, useMap } from "@vis.gl/react-google-maps";
 import { TobaccoTypeFilter } from "./TobaccoTypeFilter"
 import { useTobaccoTypes } from "./features/smokingAreas/hooks/useTobaccoTypes";
-import { useEffect, useState } from "react";
-import { LocateFixed } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { LocateFixed, Maximize, Minimize } from "lucide-react";
 import type { SmokingAreaDisplay, SmokingAreaSearchParams } from "./features/smokingAreas/types";
 import type { FetchState } from "./types/fetchState";
 
@@ -39,6 +39,9 @@ export const SmokingAreasMap = ({ state, selectedId, setSelectedId, params, setP
 
   const [position, setPosition] = useState<{lat: number, lng: number} | null>(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1025);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
+  const mapContainerRef = useRef<HTMLDivElement>(null);
 
   const { data: tobaccoTypes, refetch: refetchTobaccoTypes } = useTobaccoTypes();
 
@@ -84,7 +87,6 @@ export const SmokingAreasMap = ({ state, selectedId, setSelectedId, params, setP
           defaultCenter={defaultCenter}
           defaultZoom={16}
           mapId={mapId}
-          fullscreenControl={isMobile ? false : true}
           disableDefaultUI={true}
           zoomControl={isMobile ? false : true}
           clickableIcons={false}
