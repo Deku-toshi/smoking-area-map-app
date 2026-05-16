@@ -63,6 +63,20 @@ export const SmokingAreasMap = ({ state, selectedId, setSelectedId, params, setP
     return state.data.find((smokingArea) => smokingArea.id === selectedId) ?? null;
   };
 
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      mapContainerRef.current?.requestFullscreen();
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => setIsFullscreen(Boolean(document.fullscreenElement))
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
+
   const selectedSmokingArea = getSelectedSmokingArea();
 
   const selectedTobaccoTypeIds = selectedSmokingArea?.tobaccoTypeIds ?? []
@@ -76,6 +90,11 @@ export const SmokingAreasMap = ({ state, selectedId, setSelectedId, params, setP
   return (
     <div className="map-container" ref={mapContainerRef}>
       <TobaccoTypeFilter params={params} setParams={setParams}/>
+      {!isMobile && (
+        <button className="fullscreen-button" onClick={toggleFullscreen}>
+          {isFullscreen ? <Minimize size={20}/> : <Maximize size={20}/>}
+        </button>
+      )}
       {state.status === "loading" && <div className="loading-overlay">Loading...</div>}
       {state.status === "error" &&
         <div className="error-overlay">
