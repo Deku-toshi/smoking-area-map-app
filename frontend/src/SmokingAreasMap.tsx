@@ -74,7 +74,7 @@ export const SmokingAreasMap = ({ state, selectedId, setSelectedId, params, setP
   const defaultCenter = { lat: 35.6812, lng: 139.7671 };
 
   return (
-    <div className="map-container">
+    <div className="map-container" ref={mapContainerRef}>
       <TobaccoTypeFilter params={params} setParams={setParams}/>
       {state.status === "loading" && <div className="loading-overlay">Loading...</div>}
       {state.status === "error" &&
