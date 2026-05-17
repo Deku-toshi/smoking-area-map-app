@@ -1,8 +1,8 @@
 import { APIProvider, Map, AdvancedMarker, MapControl, ControlPosition, useMap } from "@vis.gl/react-google-maps";
 import { TobaccoTypeFilter } from "./TobaccoTypeFilter"
 import { useTobaccoTypes } from "./features/smokingAreas/hooks/useTobaccoTypes";
-import { useEffect, useState } from "react";
-import { LocateFixed } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { LocateFixed, Maximize, Minimize } from "lucide-react";
 import type { SmokingAreaDisplay, SmokingAreaSearchParams } from "./features/smokingAreas/types";
 import type { FetchState } from "./types/fetchState";
 
@@ -39,6 +39,9 @@ export const SmokingAreasMap = ({ state, selectedId, setSelectedId, params, setP
 
   const [position, setPosition] = useState<{lat: number, lng: number} | null>(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1025);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
+  const mapContainerRef = useRef<HTMLDivElement>(null);
 
   const { data: tobaccoTypes, refetch: refetchTobaccoTypes } = useTobaccoTypes();
 
@@ -60,6 +63,20 @@ export const SmokingAreasMap = ({ state, selectedId, setSelectedId, params, setP
     return state.data.find((smokingArea) => smokingArea.id === selectedId) ?? null;
   };
 
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      mapContainerRef.current?.requestFullscreen();
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => setIsFullscreen(Boolean(document.fullscreenElement))
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
+
   const selectedSmokingArea = getSelectedSmokingArea();
 
   const selectedTobaccoTypeIds = selectedSmokingArea?.tobaccoTypeIds ?? []
@@ -71,8 +88,13 @@ export const SmokingAreasMap = ({ state, selectedId, setSelectedId, params, setP
   const defaultCenter = { lat: 35.6812, lng: 139.7671 };
 
   return (
-    <div className="map-container">
+    <div className="map-container" ref={mapContainerRef}>
       <TobaccoTypeFilter params={params} setParams={setParams}/>
+      {!isMobile && (
+        <button className="fullscreen-button" onClick={toggleFullscreen}>
+          {isFullscreen ? <Minimize size={20}/> : <Maximize size={20}/>}
+        </button>
+      )}
       {state.status === "loading" && <div className="loading-overlay">Loading...</div>}
       {state.status === "error" &&
         <div className="error-overlay">
@@ -84,7 +106,6 @@ export const SmokingAreasMap = ({ state, selectedId, setSelectedId, params, setP
           defaultCenter={defaultCenter}
           defaultZoom={16}
           mapId={mapId}
-          fullscreenControl={isMobile ? false : true}
           disableDefaultUI={true}
           zoomControl={isMobile ? false : true}
           clickableIcons={false}
